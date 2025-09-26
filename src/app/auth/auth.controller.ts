@@ -3,21 +3,20 @@ import { AuthServices } from "./auth.services"
 import sendResponse from "../shared/sendResponse"
 import catchAsync from "../shared/catchAsync"
 import status from "http-status"
+import config from "../config"
+import setCookie from "../helper/cookieHelper"
 
-const loginUser = async (req: Request, res: Response) => {
-    try {
-        const result = await AuthServices.loginUser(req.body)
-        res.status(200).json({
-            msg: "success",
-            data: result
-        })
-    } catch (error) {
-        res.status(200).json({
-            msg: "success",
-            data: error
-        })
-    }
-}
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+    const result = await AuthServices.loginUser(req.body)
+    setCookie(res, "refreshToken", result.refreshToken, Number(config.cookie.refersh_cookie_expire))
+    setCookie(res, "accessToken", result.accessToken, Number(config.cookie.access_cookie_expire))
+    sendResponse(res, {
+        success: true,
+        statusCode: status.OK,
+        message: "User login successfully",
+        data: result
+    })
+})
 
 const RegisterUser = catchAsync(async (req: Request, res: Response) => {
 

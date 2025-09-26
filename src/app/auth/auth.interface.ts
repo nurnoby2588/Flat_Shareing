@@ -3,3 +3,7 @@ export type IRegisterBody = {
     email: string,
     password: string
 }
+export type ILoginBody = {
+    email: string,
+    password: string
+}

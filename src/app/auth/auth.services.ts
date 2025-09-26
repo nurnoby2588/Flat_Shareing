@@ -1,15 +1,33 @@
-import { User } from "../../generated/prisma"
 import { bcryptHelper } from "../helper/bcryptHelper"
 import prisma from "../shared/prisma"
-import { IRegisterBody} from "./auth.interface"
+import { ILoginBody, IRegisterBody } from "./auth.interface"
+import ApiError from "../error/ApiError"
+import status from "http-status"
+import { jwtHelper } from "../helper/jwtHelper"
+import config from "../config"
+import { Secret } from "jsonwebtoken"
+import { User } from "../../../generated/prisma"
 
-const loginUser = async (params: any) => {
-    const result = prisma.user.findFirstOrThrow({
+const loginUser = async (body: ILoginBody) => {
+    const userData = await prisma.user.findFirstOrThrow({
         where: {
-            email: params.email
+            email: body.email
         }
     })
-    return result
+    const match = await bcryptHelper.matchHashPassword(body.password, (await userData).password)
+    if (!match) {
+        throw new ApiError(status.UNAUTHORIZED, 'Password incorrect')
+    }
+    const payload = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name
+    }
+    const accessToken = await jwtHelper.generatedToken(payload,config.jwt.access_token_key as Secret,config.jwt.access_token_expire as string)
+    const refreshToken = await jwtHelper.generatedToken(payload,config.jwt.refresh_token_key as Secret,config.jwt.refresh_token_expire as string)
+
+
+    return {accessToken, refreshToken}
 }
 const RegisterUser = async (body: IRegisterBody): Promise<User> => {
     const hashPassword = await bcryptHelper.hashPassword(body.password)
