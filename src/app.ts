@@ -1,7 +1,7 @@
 import express, { Request, Response, type Application } from 'express'
 import cors from 'cors'
 import { AuthRouter } from './app/auth/auth.router';
-import handleGlobalError from './app/middleware/globalError';
+import handleGlobalError from './app/error/handleGlobalError';
 const app: Application = express();
 
 //middleware
