@@ -19,9 +19,7 @@ const createFalt = catchAsync(async (req: Request, res: Response) => {
 const getFlatFromDb = catchAsync(async (req: Request, res: Response) => {
     const filterData = pick(req.query, filterAbleData)
     const options = pick(req.query, peginationField)
-    console.log(options)
-    console.log(filterData)
-    const result = await FlatServices.getFlatFromDb(filterData,options)
+    const result = await FlatServices.getFlatFromDb(filterData, options)
     sendResponse(res, {
         statusCode: status.CREATED,
         success: true,
@@ -29,4 +27,15 @@ const getFlatFromDb = catchAsync(async (req: Request, res: Response) => {
         data: result
     })
 })
-export const FlatController = { createFalt, getFlatFromDb }
+const updateFlat = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params
+    console.log(id)
+    const result = await FlatServices.updateFlat(id, req.body)
+    sendResponse(res, {
+        statusCode: status.CREATED,
+        success: true,
+        message: "Flat update successfully",
+        data: result
+    })
+})
+export const FlatController = { createFalt, getFlatFromDb, updateFlat }

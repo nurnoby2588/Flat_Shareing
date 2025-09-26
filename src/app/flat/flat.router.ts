@@ -6,5 +6,6 @@ import { FlatValidation } from "./flat.validation";
 const router = express.Router()
 router.post('/', verifyUser,zodValidation(FlatValidation.CreateFlat), FlatController.createFalt)
 router.get('/', verifyUser, FlatController.getFlatFromDb)
+router.put('/:id', verifyUser, FlatController.updateFlat)
 // router.post('/register',)
 export const FlatRouter = router
