@@ -12,10 +12,10 @@ type IoptionReturn = {
     sortOrder: string
 }
 const calculatePaginate = (options: Ioption): IoptionReturn => {
-  const page = Number(options.page) || 1
-    const limit = Number(options.limit) || 10
+  const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 10;
     const sortBy = options.sortBy || 'createdAt';
-    const sortOrder = options.sortOrder || 'asc'
+    const sortOrder = options.sortOrder || 'asc';
     const skip = (page - 1) * limit
     return {
         page,

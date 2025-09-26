@@ -9,3 +9,13 @@ export type IFlatBody = {
     advanceAmount: number,
     availability: boolean;
 }
+export type Ioption = {
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: string
+}
+export type IUserFilterRequest = {
+    availability?: string | undefined,
+    searchTerm?: string | undefined,
+}

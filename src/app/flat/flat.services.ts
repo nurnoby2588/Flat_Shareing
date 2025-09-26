@@ -1,8 +1,8 @@
-// import { Prisma } from "../../generated/prisma"
+import { Prisma } from "../../generated/prisma"
 import { peginationHelper } from "../helper/paginationHelper"
 import prisma from "../shared/prisma"
 import { searchAbleData } from "./flat.constant"
-import { IFlatBody } from "./flat.interface"
+import { IFlatBody, Ioption, IUserFilterRequest } from "./flat.interface"
 
 const createFalt = async (body: IFlatBody) => {
     const newFlat = await prisma.flat.create({
@@ -11,10 +11,10 @@ const createFalt = async (body: IFlatBody) => {
     return newFlat
 }
 
-const getFlatFromDb = async (query: any, options: any) => {
+const getFlatFromDb = async (query: IUserFilterRequest, options: Ioption) => {
     const { searchTerm, availability, ...filterData } = query;
     const { page, limit, skip, sortOrder, sortBy } = peginationHelper.calculatePaginate(options)
-    const andCondition = []
+    const andCondition : Prisma.FlatWhereInput[]  = []
 
     if (query.searchTerm) {
         andCondition.push({
@@ -31,7 +31,7 @@ const getFlatFromDb = async (query: any, options: any) => {
         andCondition.push({
             AND: Object.keys(filterData).map(key => ({
                 [key]: {
-                    equals: filterData[key]
+                    equals: (filterData as any)[key]
                 }
             }))
         })
@@ -39,11 +39,11 @@ const getFlatFromDb = async (query: any, options: any) => {
     if (availability) {
         andCondition.push({
             availability: {
-                equals: availability == 'true' ? true : availability == 'false' ? false : availability
+                equals: JSON.parse(availability)
             }
         })
     }
-    const whereConding = { AND: andCondition }
+    const whereConding : Prisma.FlatWhereInput  = { AND: andCondition }
     const result = await prisma.flat.findMany({
         where: whereConding,
         skip,
