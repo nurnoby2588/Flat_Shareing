@@ -16,7 +16,7 @@ const verifyUser = async (req: Request & { user?: any }, res: Response, next: Ne
             throw new ApiError(status.UNAUTHORIZED, "AccessToken invalid or expire")
         }
         req.user = verifyData
-        next
+        next()
     } catch (error) {
         next(error)
     }
