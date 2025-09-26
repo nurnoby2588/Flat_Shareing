@@ -6,10 +6,74 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  booking     Booking[]
+  UserProfile UserProfile?
+
+  @@map("users")
+}
+
+model Flat {
+  id                   String    @id @default(uuid())
+  squareFeet           String
+  totalBedrooms        Int
+  totalRooms           Int
+  utilitiesDescription String
+  location             String
+  description          String
+  rent                 Int
+  availability         Boolean
+  advanceAmount        Int
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  booking              Booking[]
+
+  @@map("flats")
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  flatId    String
+  userId    String
+  status    BookingStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  flat Flat @relation(fields: [flatId], references: [id])
+
+  @@map("booking")
+}
+
+model UserProfile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  bio        String
+  profession String
+  address    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("userProfile")
+}
+
+enum BookingStatus {
+  PENDING
+  BOOKED
+  REJECTED
 }
