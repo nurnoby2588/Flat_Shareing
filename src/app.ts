@@ -4,6 +4,7 @@ import { AuthRouter } from './app/auth/auth.router';
 import handleGlobalError from './app/error/handleGlobalError';
 import cookieParser from 'cookie-parser'
 import { FlatRouter } from './app/flat/flat.router';
+import { UserRouter } from './app/user/user.router';
 const app: Application = express();
 
 //middleware
@@ -18,6 +19,7 @@ app.get('/',(req:Request ,res:Response)=>{
 
 app.use('/api/v1/auth',AuthRouter)
 app.use('/api/v1/flat',FlatRouter)
+app.use('/api/v1/profile',UserRouter)
 app.use(handleGlobalError)
 
 export default app

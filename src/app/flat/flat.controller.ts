@@ -29,7 +29,6 @@ const getFlatFromDb = catchAsync(async (req: Request, res: Response) => {
 })
 const updateFlat = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params
-    console.log(id)
     const result = await FlatServices.updateFlat(id, req.body)
     sendResponse(res, {
         statusCode: status.OK,
@@ -39,7 +38,6 @@ const updateFlat = catchAsync(async (req: Request, res: Response) => {
     })
 })
 const flatBooking = catchAsync(async (req: Request, res: Response) => {
-    console.log(req.body)
     const result = await FlatServices.flatBooking(req)
     sendResponse(res, {
         statusCode: status.CREATED,
