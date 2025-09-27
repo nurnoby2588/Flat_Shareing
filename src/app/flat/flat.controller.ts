@@ -21,9 +21,9 @@ const getFlatFromDb = catchAsync(async (req: Request, res: Response) => {
     const options = pick(req.query, peginationField)
     const result = await FlatServices.getFlatFromDb(filterData, options)
     sendResponse(res, {
-        statusCode: status.CREATED,
+        statusCode: status.OK,
         success: true,
-        message: "Flat get successfully",
+        message: "Flats retrieved successfully",
         data: result
     })
 })
@@ -32,10 +32,40 @@ const updateFlat = catchAsync(async (req: Request, res: Response) => {
     console.log(id)
     const result = await FlatServices.updateFlat(id, req.body)
     sendResponse(res, {
-        statusCode: status.CREATED,
+        statusCode: status.OK,
         success: true,
-        message: "Flat update successfully",
+        message: "Flat information updated successfully",
         data: result
     })
 })
-export const FlatController = { createFalt, getFlatFromDb, updateFlat }
+const flatBooking = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await FlatServices.flatBooking(req)
+    sendResponse(res, {
+        statusCode: status.CREATED,
+        success: true,
+        message: "Booking requests submitted successfully",
+        data: result
+    })
+})
+const getFlatBookingRequests = catchAsync(async (req: Request, res: Response) => {
+    const result = await FlatServices.getFlatBookingRequests()
+    sendResponse(res, {
+        statusCode: status.CREATED,
+        success: true,
+        message: "Booking requests submitted successfully",
+        data: result
+    })
+})
+const updatedFlatBookingStatus = catchAsync(async (req: Request, res: Response) => {
+    const {bookingId} = req.params;
+    const statusData = req.body.status
+    const result = await FlatServices.updatedFlatBookingStatus(bookingId, statusData)
+    sendResponse(res, {
+        statusCode: status.CREATED,
+        success: true,
+        message: "Booking requests submitted successfully",
+        data: result
+    })
+})
+export const FlatController = { createFalt, getFlatFromDb, updateFlat, flatBooking, getFlatBookingRequests ,updatedFlatBookingStatus }

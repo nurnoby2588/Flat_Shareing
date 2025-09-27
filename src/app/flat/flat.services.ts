@@ -1,4 +1,5 @@
-import { Flat, Prisma } from "../../generated/prisma"
+import { Request } from "express"
+import { Booking, BookingStatus, Flat, Prisma } from "../../generated/prisma"
 import { peginationHelper } from "../helper/paginationHelper"
 import prisma from "../shared/prisma"
 import { searchAbleData } from "./flat.constant"
@@ -69,5 +70,46 @@ const updateFlat = async (id: string, body: Partial<Flat>) => {
     return updateFalt
 
 }
+const flatBooking = async (req: Request & { user?: any }): Promise<Booking> => {
+    const { flatId } = req.body;
+    const userId = req.user.id
+    await prisma.flat.findUniqueOrThrow({
+        where: {
+            id: flatId
+        }
+    })
+    const createBooking = await prisma.booking.create({
+        data: {
+            userId,
+            flatId,
+        }
+    })
+    return createBooking
 
-export const FlatServices = { createFalt, getFlatFromDb, updateFlat }
+}
+const getFlatBookingRequests = async () => {
+    const getBooking = await prisma.booking.findMany({})
+    return getBooking
+
+}
+const updatedFlatBookingStatus = async (bookingId: string, status: BookingStatus) => {
+    console.log(status) // { status: 'BOOKED' }
+    await prisma.booking.findUniqueOrThrow({
+        where: {
+            id: bookingId
+        }
+    })
+
+    const updateStatus = await prisma.booking.update({
+        where: {
+            id: bookingId
+        },
+        data: {
+            status
+        }
+    })
+    return updateStatus
+
+}
+
+export const FlatServices = { createFalt, getFlatFromDb, updateFlat, flatBooking, getFlatBookingRequests, updatedFlatBookingStatus }
