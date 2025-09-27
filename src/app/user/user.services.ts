@@ -5,10 +5,9 @@ const getUserFromDB = async () => {
     const users = await prisma.userProfile.findMany()
     return users
 }
-const updateUserProfile = async (req: Request & { user: any }) => {
-    const userId = req.user.id
+const updateUserProfile = async (req: Request & { user?: any }) => {
+    const userId = req.user?.id
     const body = req.body
-    console.log(body, userId)
     const upsertProfile = await prisma.userProfile.upsert({
         where: {
             userId
